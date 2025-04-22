@@ -1,0 +1,17 @@
+Package: ClusteringSupervisado
+Type: Package
+Title: Algoritmos de Clustering Supervisado en R
+Version: 0.1.0
+Authors@R: 
+    person("Sara", "SanchezSanclmente", email = "sarasancle.sa@gmail.com", role = c("aut", "cre"))
+Description: Este paquete implementa dos algoritmos de clustering supervisado: 
+    una versión supervisada del algoritmo PAM (Partitioning Around Medoids) 
+    y una versión del algoritmo SRIDHCR, basada en prototipos y optimización iterativa.
+    Ambos métodos permiten clasificar observaciones en función de prototipos representativos 
+    de cada clase, y están diseñados para aplicarse en contextos supervisados.
+License: MIT
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    cluster
