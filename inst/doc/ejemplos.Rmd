@@ -1,0 +1,120 @@
+---
+title: "Ejemplos de uso del paquete ClusteringSupervisado"
+output: pdf_document
+vignette: >
+  %\VignetteIndexEntry{Ejemplos de uso}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(ClusteringSupervisado)
+```
+Este documento presenta ejemplos prácticos del uso del paquete `ClusteringSupervisado`, que implementa dos algoritmos de clustering con información de clase: `supervised_pam()` y `supervised_sridhcr()`.  
+
+Ambos algoritmos parten de un conjunto de datos con etiquetas conocidas y buscan encontrar agrupaciones (clústeres) que representen bien dicha estructura, penalizando el exceso de prototipos o la impureza de los grupos.  
+
+A continuación, se muestran ejemplos aplicados a dos conjuntos de datos conocidos: `iris` (multiclase) y `mtcars` (con clase binaria artificial).  
+
+
+Ejemplo 1: Dataset `iris`:  
+
+Este ejemplo aplica `supervised_pam()` a las flores `iris`, con tres clases. El algoritmo selecciona prototipos que representen cada clase y calcula predicciones sobre el conjunto total. La matriz de confusión muestra la concordancia entre etiquetas reales y predichas.
+
+```{r}
+# Datos de entrada
+data(iris)
+X <- iris[, -5]
+y <- iris$Species
+
+# Aplicación del algoritmo
+res_pam <- supervised_pam(X, y, k = 3, beta = 0.5)
+
+# Resultados
+res_pam$matriz_confusion
+res_pam$precision
+
+```
+
+
+El algoritmo `supervised_sridhcr()` emplea una búsqueda local con inserciones y eliminaciones para encontrar un conjunto representativo de prototipos que minimicen la impureza más penalización.
+
+```{r}
+# Aplicación del algoritmo con SRIDHCR
+res_sridhcr <- supervised_sridhcr(X, y, beta = 0.4, max_iter = 10, reinicios = 3)
+
+# Resultados
+res_sridhcr$matriz_confusion
+res_sridhcr$precision
+
+```
+
+
+
+A continuación, se muestra un ejemplo de visualización simple de los resultados del clustering supervisado con `supervised_pam()` sobre el conjunto `iris`.
+
+Se representa la distribución de las muestras en función de sus dos primeras variables (`Sepal.Length` y `Sepal.Width`), coloreadas según las clases predichas por el algoritmo. Esto permite apreciar visualmente si las predicciones se corresponden con agrupaciones naturales en el espacio de características.
+
+```{r}
+library(ggplot2)
+
+df <- data.frame(
+  Dim1 = X[,1],
+  Dim2 = X[,2],
+  Real = y,
+  PAM = res_pam$clases_predichas,
+  SRIDHCR = res_sridhcr$clases_predichas
+)
+
+ggplot(df, aes(x = Dim1, y = Dim2, color = PAM)) +
+  geom_point(size = 2) +
+  labs(title = "Clustering PAM supervisado sobre el conjunto Iris")
+
+```
+
+Ejemplo 1: Dataset `mtcars`:
+
+Aquí usamos el conjunto `mtcars` creando una clase artificial binaria según el tipo de motor (`vs`). Se estandarizan las variables antes de aplicar `supervised_pam()`. El resultado indica cuán bien el algoritmo reconstruye esta etiqueta a partir de las variables numéricas.  
+
+```{r}
+data(mtcars)
+X2 <- scale(mtcars[, -8])  # Quitamos variable 'vs'
+y2 <- ifelse(mtcars$vs == 1, "MotorV", "MotorL")  # clase binaria
+
+res_pam2 <- supervised_pam(X2, y2, k = 2, beta = 0.3)
+res_pam2$matriz_confusion
+res_pam2$precision
+
+```
+
+También probamos `supervised_sridhcr()` sobre el mismo conjunto para comparar los resultados y evaluar si mejora en precisión o simplicidad del modelo.  
+
+```{r}
+res_sridhcr2 <- supervised_sridhcr(X2, y2, beta = 0.5, max_iter = 10, reinicios = 3)
+
+res_sridhcr2$matriz_confusion
+res_sridhcr2$precision
+```
+
+También es posible representar los resultados del clustering supervisado aplicado a `mtcars`, aunque este conjunto de datos no tiene una estructura tan visualmente evidente como `iris`.
+
+A modo ilustrativo, el siguiente gráfico muestra dos variables (`mpg` y `hp`) coloreadas según las clases predichas por `supervised_pam()`.
+
+```{r}
+df2 <- data.frame(
+  mpg = mtcars$mpg,
+  hp = mtcars$hp,
+  PAM = res_pam2$clases_predichas
+)
+
+ggplot(df2, aes(x = mpg, y = hp, color = PAM)) +
+  geom_point(size = 2) +
+  labs(title = "Clustering PAM sobre mtcars",
+       x = "Millas por galón (mpg)", y = "Caballos de fuerza (hp)", color = "Clase predicha") +
+  theme_minimal()
+
+```
+

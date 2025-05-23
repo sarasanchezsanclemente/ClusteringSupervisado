@@ -2,22 +2,25 @@
 % Please edit documentation in R/supervised_clustering.R
 \name{supervised_pam}
 \alias{supervised_pam}
-\title{Algoritme PAM supervisat}
+\title{Algoritmo PAM supervisado}
 \usage{
-supervised_pam(datos, clases, k_por_clase = 1, lambda = 0)
+supervised_pam(datos, clases, k = 2, beta = 1, max_iter = 50)
 }
 \arguments{
-\item{datos}{Matriu o data.frame de mostres.}
+\item{datos}{Matriz o data.frame de muestras.}
 
-\item{clases}{Vector de classes.}
+\item{clases}{Vector de clases.}
 
-\item{k_por_clase}{Nombre de prototips per classe.}
+\item{k}{Número total de prototipos a seleccionar.}
 
-\item{lambda}{No utilitzat actualment.}
+\item{beta}{Peso de la penalización.}
+
+\item{max_iter}{Número máximo de iteraciones para la fase de mejora.}
 }
 \value{
-Llista amb prototips, classes, prediccions, matriu de confusió i precisió.
+Lista con prototipos, predicciones, impureza, coste y matriz de confusión.
 }
 \description{
-Aplica el mètode PAM de forma supervisada seleccionant prototips per classe.
+Aplica el método PAM de forma supervisada seleccionando prototipos globales que minimizan la impureza y penalización.
+según lo descrito en el artículo de Eick et al. (2004).
 }

@@ -2,22 +2,25 @@
 % Please edit documentation in R/supervised_clustering.R
 \name{supervised_sridhcr}
 \alias{supervised_sridhcr}
-\title{Algoritme SRIDHCR supervisat}
+\title{Algoritmo SRIDHCR supervisado}
 \usage{
-supervised_sridhcr(datos, clases, max_iter = 20, max_reinicios = 5)
+supervised_sridhcr(datos, clases, beta = 0.4, max_iter = 50, reinicios = 5)
 }
 \arguments{
-\item{datos}{Matriu o data.frame de mostres.}
+\item{datos}{Matriz o data.frame de muestras (se estandariza internamente).}
 
-\item{clases}{Vector de classes.}
+\item{clases}{Vector de clases (factor).}
 
-\item{max_iter}{Nombre màxim d'iteracions per reinici.}
+\item{beta}{Peso de la penalización por número de clusters.}
 
-\item{max_reinicios}{Nombre màxim de reinicis aleatoris.}
+\item{max_iter}{Número máximo de iteraciones por reinicio.}
+
+\item{reinicios}{Número de reinicios aleatorios para evitar mínimos locales.}
 }
 \value{
-Millor resultat obtingut (prototips, prediccions, precisió, etc.).
+Una lista con prototipos, predicciones, matriz de confusión, impureza, precisión y valor de la función q.
 }
 \description{
-Aplica l'algoritme SRIDHCR mitjançant optimització iterativa.
+Implementa el algoritmo de clustering supervisado SRIDHCR (Single Representative Insertion/Deletion Hill Climbing with Random Restart)
+según lo descrito en el artículo de Eick et al. (2004).
 }
